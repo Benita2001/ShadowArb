@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-interface Market {
+export interface Market {
   id: string;
   question: string;
   yesPrice: number;
@@ -41,7 +41,16 @@ function isParlay(question: string): boolean {
     vsCount > 1 ||
     /\bparlay\b/.test(q) ||
     /run line|puck line/.test(q) ||
-    /player prop/.test(q)
+    /player prop/.test(q) ||
+    q.startsWith('spread:') ||
+    q.includes('o/u') ||
+    q.includes('over/under') ||
+    q.includes('(-') ||
+    q.includes('+/-') ||
+    q.includes('both teams') ||
+    q.includes('moneyline') ||
+    q.includes('1st half') ||
+    q.includes('1st quarter')
   );
 }
 
@@ -118,19 +127,29 @@ async function fetchKalshiMarkets(): Promise<Market[]> {
   }
 }
 
+// Normalize common aliases so "btc" and "bitcoin" share a keyword, etc.
+const ALIASES: Record<string, string> = {
+  btc: 'bitcoin', eth: 'ethereum', sol: 'solana', xrp: 'ripple',
+  bnb: 'binance', doge: 'dogecoin', ada: 'cardano',
+  fed: 'fedreserve', fomc: 'fedreserve',
+  gop: 'republican', dem: 'democrat',
+  usa: 'america', usd: 'dollar',
+};
+
 function extractKeywords(question: string): string[] {
   const stopwords = new Set([
     'will', 'the', 'a', 'an', 'in', 'on', 'at', 'to', 'for', 'of',
     'and', 'or', 'by', 'be', 'is', 'are', 'was', 'were', 'have',
     'has', 'had', 'this', 'that', 'with', 'from', '2024', '2025', '2026',
-    'win', 'wins', 'beat', 'reach', 'over', 'under', 'more', 'less',
+    'win', 'wins', 'beat', 'over', 'under', 'more', 'less',
     'who', 'what', 'when', 'how', 'which', 'their', 'they',
   ]);
   return question
     .toLowerCase()
     .replace(/[^a-z0-9 ]/g, ' ')
     .split(/\s+/)
-    .filter(w => w.length > 2 && !stopwords.has(w));
+    .filter(w => w.length > 2 && !stopwords.has(w))
+    .map(w => ALIASES[w] ?? w);
 }
 
 function matchScore(a: Market, b: Market): number {
@@ -193,15 +212,19 @@ export async function scanMarkets(): Promise<ArbOpportunity[]> {
     fetchKalshiMarkets(),
   ]);
 
-  console.log(`\n  Polymarket: ${poly.length} markets`);
-  console.log(`  Kalshi:     ${kalshi.length} markets`);
-  console.log(`  Total:      ${poly.length + kalshi.length} markets`);
+  const breakdown = (markets: Market[]) => {
+    const b: Record<string, number> = {};
+    markets.forEach(m => { b[m.category] = (b[m.category] || 0) + 1; });
+    return Object.entries(b).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k}=${v}`).join(', ');
+  };
 
-  const categoryBreakdown: Record<string, number> = {};
-  [...poly, ...kalshi].forEach(m => {
-    categoryBreakdown[m.category] = (categoryBreakdown[m.category] || 0) + 1;
-  });
-  console.log('  Categories:', JSON.stringify(categoryBreakdown));
+  console.log(`\n  Polymarket: ${poly.length} markets  [${breakdown(poly)}]`);
+  console.log(`  Kalshi:     ${kalshi.length} markets  [${breakdown(kalshi)}]`);
+
+  const allBreakdown: Record<string, number> = {};
+  [...poly, ...kalshi].forEach(m => { allBreakdown[m.category] = (allBreakdown[m.category] || 0) + 1; });
+  const summaryParts = Object.entries(allBreakdown).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k}=${v}`).join(', ');
+  console.log(`  Scan complete: ${summaryParts}`);
 
   const all = [...poly, ...kalshi];
   const opps = findOpportunities(all);

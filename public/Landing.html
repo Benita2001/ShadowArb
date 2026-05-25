@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ShadowArb · Trade in the Dark</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@300,400,500,600,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Brand mark: stylized S flame echoing brand signature -->
+    <symbol id="brand-mark" viewBox="0 0 32 40">
+      <path d="M24 6c-3-2-7-3-11-1-4 2-5 5-3 8 2 3 7 4 10 6 4 2 5 5 3 9-3 4-9 5-13 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M22 4c-1 2-3 3-5 3M10 36c1-2 3-3 5-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.7"/>
+      <circle cx="6" cy="34" r="1.1" fill="currentColor" opacity="0.85"/>
+    </symbol>
+    <symbol id="ico-ext" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="Landing.html">
+      <svg class="brand-mark" style="color:var(--accent)" aria-hidden="true"><use href="#brand-mark"/></svg>
+      <span class="brand-stack">
+        <span class="name">SHADOWARB</span>
+        <span class="sub">TRADE IN THE DARK</span>
+      </span>
+    </a>
+    <a class="btn btn-ghost" href="Terminal.html">View Live Agent <span class="arrow"></span></a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap hero-inner">
+    <div class="hero-left">
+
+      <h1>Find your edge<br/>in the Dark.</h1>
+      <p class="hero-body">ShadowArb scans every market, detects inefficiencies and executes privately, so your edge remains private.</p>
+      <div class="hero-divider"></div>
+      <div class="hero-wordmark">
+        <svg class="mark" aria-hidden="true"><use href="#brand-mark"/></svg>
+        <span class="stack">
+          <span class="name">SHADOWARB</span>
+          <span class="sub">TRADE IN THE DARK</span>
+        </span>
+      </div>
+      <div class="hero-cta-row">
+        <a class="btn btn-primary" href="Terminal.html">View Live Agent <span class="arrow"></span></a>
+      </div>
+    </div>
+
+    <div class="mascot-pane">
+      <div class="halo"></div>
+      <img class="mascot-img" src="assets/mascot-hero.png" alt="ShadowArb ghost-flame mascot with electric green eyes" />
+    </div>
+  </div>
+</header>
+
+<!-- STATS NUMBERS -->
+<section class="stats-strip">
+  <div class="cell"><div class="v" id="stat-scanned">·</div><div class="l">Markets Scanned</div></div>
+  <div class="cell"><div class="v">Real<span class="unit">·</span>time</div><div class="l">Arb Detection</div></div>
+  <div class="cell"><div class="v">On<span class="unit">·</span>chain</div><div class="l">Verified Proof</div></div>
+  <div class="cell"><div class="v" id="stat-usdc"><span class="unit">$</span>0.00</div><div class="l">USDC Settled</div></div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="wrap">
+    <div class="how-head">
+      <div class="eyebrow" style="margin-bottom:18px">How it works</div>
+      <h2>Six steps from signal<br/>to <span class="accent">verified settlement.</span></h2>
+      <p class="lede">A continuous loop. Scan, decide, seal, act, prove, settle. Every move is fingerprinted on Arc before it touches a market. Strategy stays dark until after it wins.</p>
+    </div>
+
+    <div class="flow">
+      <article class="step">
+        <span class="stepnum">01</span>
+        <svg class="icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4">
+          <circle cx="16" cy="16" r="11"/>
+          <circle cx="16" cy="16" r="6"/>
+          <circle cx="16" cy="16" r="1.6" fill="currentColor" stroke="none"/>
+          <path d="M16 5v3M16 24v3M5 16h3M24 16h3" stroke-linecap="round"/>
+          <path d="M16 16l9-4" stroke-dasharray="2 2"/>
+        </svg>
+        <div class="step-tag">STEP 01</div>
+        <h3>Scan</h3>
+        <p>Polymarket and Kalshi swept every 30 seconds. 420+ live markets cross-indexed by event signature.</p>
+      </article>
+
+      <article class="step">
+        <span class="stepnum">02</span>
+        <svg class="icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4">
+          <circle cx="16" cy="16" r="10"/>
+          <path d="M16 4v6M16 22v6M4 16h6M22 16h6" stroke-linecap="round"/>
+          <circle cx="16" cy="16" r="2.4"/>
+        </svg>
+        <div class="step-tag">STEP 02</div>
+        <h3>Detect</h3>
+        <p>Claude identifies genuine price gaps on the same event across platforms. False positives discarded.</p>
+      </article>
+
+      <article class="step commit">
+        <span class="stepnum" style="color:rgba(91,255,176,0.08)">03</span>
+        <svg class="icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="6" y="14" width="20" height="14" rx="1"/>
+          <path d="M10 14v-4a6 6 0 0112 0v4"/>
+          <circle cx="16" cy="21" r="1.6" fill="currentColor" stroke="none"/>
+          <path d="M16 22v3" stroke-linecap="round"/>
+        </svg>
+        <div class="step-tag">STEP 03 · CORE INNOVATION</div>
+        <h3>Commit</h3>
+        <p>Trade intent sealed as a <span class="mono" style="color:var(--accent-2)">keccak256</span> hash on Arc <i>before</i> execution. The fingerprint is public. The strategy is not.</p>
+        <div class="hash-strip">0x12a464aadfb0f3d0<span style="color:var(--muted)">…b9c4</span></div>
+        <div class="cap">Nobody sees this until after settlement</div>
+      </article>
+
+      <article class="step">
+        <span class="stepnum">04</span>
+        <svg class="icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4">
+          <path d="M18 3L7 18h7l-3 11 11-15h-7z" stroke-linejoin="round"/>
+        </svg>
+        <div class="step-tag">STEP 04</div>
+        <h3>Execute</h3>
+        <p>Circle Developer-Controlled Wallet executes autonomously. No human in the loop. No approval delay.</p>
+      </article>
+
+      <article class="step">
+        <span class="stepnum">05</span>
+        <svg class="icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4">
+          <rect x="6" y="14" width="20" height="14" rx="1"/>
+          <path d="M10 14v-4a6 6 0 0112 0"/>
+          <circle cx="16" cy="21" r="1.6" fill="currentColor" stroke="none"/>
+          <path d="M16 22v3" stroke-linecap="round"/>
+        </svg>
+        <div class="step-tag">STEP 05</div>
+        <h3>Reveal</h3>
+        <p>Full trade details published on-chain. Anyone can re-hash the reveal and confirm it matches the commit.</p>
+        <div class="cap" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);margin-top:14px;letter-spacing:0.06em">COMMIT&nbsp;=&nbsp;REVEAL&nbsp;&nbsp;✓</div>
+      </article>
+
+      <article class="step">
+        <span class="stepnum">06</span>
+        <svg class="icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4">
+          <circle cx="16" cy="16" r="11"/>
+          <path d="M10 16.5l4 4 8-9" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="step-tag">STEP 06</div>
+        <h3>Settle</h3>
+        <p>USDC settles via ERC-8183 job contract. Reputation updated on ERC-8004. Loop restarts.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ENTER THE DARK -->
+<section class="enter">
+  <div class="wrap">
+    <h2>Want to <span class="accent">enter the dark?</span></h2>
+    <p class="sub">Connect your institution. Set your parameters. Let ShadowArb find the edge.</p>
+    <a class="btn btn-primary btn-xl" href="Terminal.html">View Live Agent <span class="arrow"></span></a>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap foot-inner">
+    <div>ShadowArb · Trade in the Dark</div>
+    <div>Built for Agora x Arc x Circle Hackathon 2026 · @0xbeni</div>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  const setNav = () => nav.classList.toggle('scrolled', window.scrollY > 12);
+  setNav(); window.addEventListener('scroll', setNav, { passive: true });
+
+  // ── Live stats from API ──────────────────────────────────────────
+  const API = 'http://localhost:3001';
+
+  async function refreshStats() {
+    try {
+      const res = await fetch(`${API}/api/stats`);
+      if (!res.ok) return;
+      const s = await res.json();
+
+      const scanned = document.getElementById('stat-scanned');
+      if (scanned && s.marketsScanned > 0)
+        scanned.innerHTML = `${s.marketsScanned}<span class="unit">+</span>`;
+
+      const usdc = document.getElementById('stat-usdc');
+      if (usdc) {
+        const raw = parseFloat((s.usdcSettled ?? '$0').replace('$', ''));
+        usdc.innerHTML = `<span class="unit">$</span>${raw.toFixed(2)}`;
+      }
+    } catch { /* API not running — keep current values */ }
+  }
+
+  refreshStats();
+  setInterval(refreshStats, 30_000);
+</script>
+</body>
+</html>

@@ -4,7 +4,11 @@ import { arcTestnet } from 'viem/chains';
 import * as dotenv from 'dotenv';
 import { ArbOpportunity } from './scanner.js';
 import { AgentDecision } from './agent.js';
+import { generateStealthMetaAddress, generateStealthAddress, announceStealthAddress } from './privacy/StealthAddress.js';
 dotenv.config();
+
+// Agent-level stealth meta-address — persists across job calls within this process
+const AGENT_META = generateStealthMetaAddress();
 
 const AGENTIC_COMMERCE = '0x0747EEf0706327138c69792bF28Cd525089e4583';
 const USDC = '0x3600000000000000000000000000000000000000';
@@ -112,7 +116,7 @@ async function waitForTransaction(circleClient: any, txId: string, label: string
 export async function executeArbitrageJob(
   opp: ArbOpportunity,
   decision: AgentDecision
-): Promise<void> {
+): Promise<{ commitTxHash: string; jobId: string }> {
   console.log('\n ShadowArb — Executing Arbitrage Job on Arc');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log(`\n  Opportunity: "${opp.question.slice(0, 60)}"`);
@@ -163,11 +167,22 @@ export async function executeArbitrageJob(
   console.log(`  ✓ Commit hash sealed on Arc BEFORE execution`);
   console.log(`  (Nobody can see what we are trading until we reveal)`);
 
+  // ── STEALTH FUNDING ───────────────────────────────────────────────────────
+  console.log('\n── Stealth Address — ERC-5564 Privacy Layer ──');
+  const stealth = generateStealthAddress(AGENT_META);
+  const ann     = announceStealthAddress(stealth.ephemeralPubKey, stealth.address);
+  console.log(`  Fresh stealth address : ${stealth.address}`);
+  console.log(`  Ephemeral pubkey      : ${stealth.ephemeralPubKey.slice(0, 22)}…`);
+  console.log(`  [TESTNET] Would fund ${stealth.address.slice(0, 14)}… with $${decision.recommendedSize + 0.01} USDC from master wallet`);
+  console.log(`  [TESTNET] Trade would execute FROM stealth address (unlinked on-chain)`);
+  console.log(`  [TESTNET] Remaining USDC would sweep back to master wallet after settlement`);
+  console.log(`  Announcement posted   : ephemeral=${ann.ephemeralPubKey.slice(0, 12)}… stealth=${ann.stealthAddress.slice(0, 12)}…`);
+
   // ── STEP 2: EXECUTE ───────────────────────────────────────────────────────
   console.log('\n── Step 2: EXECUTE — Place trade ──');
   console.log(`  [TESTNET] Buying YES on ${opp.buyOn} @ ${(opp.buyPrice * 100).toFixed(1)}%`);
   console.log(`  [TESTNET] Selling NO on ${opp.sellOn} @ ${(opp.sellPrice * 100).toFixed(1)}%`);
-  console.log(`  [TESTNET] Size: $${decision.recommendedSize} USDC`);
+  console.log(`  [TESTNET] Size: $${decision.recommendedSize} USDC  (from stealth ${stealth.address.slice(0, 12)}…)`);
   await new Promise(r => setTimeout(r, 1500));
   console.log('  ✓ Trade executed (simulated on testnet)');
 
@@ -286,7 +301,10 @@ export async function executeArbitrageJob(
   console.log('  ✓ USDC settled autonomously on Arc');
   console.log('  ✓ Trade revealed and commit hash verified');
   console.log('  ✓ Agent reputation updated on ERC-8004');
-  console.log(`\n  Job ID: ${jobId}`);
-  console.log(`  Commit TX: https://testnet.arcscan.app/tx/${commitTxHash}`);
-  console.log(`  Agent: https://testnet.arcscan.app/address/${ownerAddress}`);
+  console.log(`\n  Job ID:        ${jobId}`);
+  console.log(`  Commit TX:     https://testnet.arcscan.app/tx/${commitTxHash}`);
+  console.log(`  Stealth addr:  ${stealth.address}  (single-use, now discarded)`);
+  console.log(`  Agent:         https://testnet.arcscan.app/address/${ownerAddress}`);
+
+  return { commitTxHash, jobId: jobId.toString() };
 }

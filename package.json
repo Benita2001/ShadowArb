@@ -6,7 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsx --env-file=.env index.ts",
-    "agent": "tsx --env-file=.env src/agent.ts"
+    "agent": "tsx --env-file=.env src/agent.ts",
+    "server": "tsx --env-file=.env src/server.ts",
+    "seed": "tsx --env-file=.env src/seed-trades.ts",
+    "sdk:build": "tsc --outDir dist",
+    "privacy:test": "tsx --env-file=.env src/privacy/StealthAddress.ts"
   },
   "keywords": [],
   "author": "",
@@ -15,10 +19,17 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.98.0",
     "@circle-fin/developer-controlled-wallets": "^10.3.1",
+    "@noble/hashes": "^2.2.0",
+    "@noble/secp256k1": "^3.1.0",
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
-    "viem": "^2.50.4"
+    "express": "^5.2.1",
+    "viem": "^2.50.4",
+    "x402": "^1.2.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
     "@types/node": "^25.9.1",
     "tsx": "^4.22.3",
     "typescript": "^6.0.3"

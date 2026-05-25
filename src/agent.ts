@@ -14,16 +14,41 @@ export interface AgentDecision {
   recommendedSize: number;
 }
 
-export async function evaluateOpportunity(opp: ArbOpportunity): Promise<AgentDecision> {
-  const prompt = `You are ShadowArb, an autonomous arbitrage agent for prediction markets.
+export interface TradeHistoryEntry {
+  question:   string;
+  status:     string;
+  gapPercent: number;
+  reasoning:  string;
+}
 
-Evaluate if this is a REAL arbitrage opportunity:
+export async function evaluateOpportunity(
+  opp: ArbOpportunity,
+  history: TradeHistoryEntry[] = [],
+): Promise<AgentDecision> {
+  const historyBlock = history.length > 0
+    ? `\nRECENT TRADE HISTORY (last ${history.length} decisions — learn from these):
+${history.map((t, i) => `  ${i + 1}. [${t.status}] gap=${t.gapPercent.toFixed(1)}% — ${t.reasoning}`).join('\n')}
+Use this history to calibrate confidence. If similar gaps were verified before, be more confident. If similar questions were rejected, apply the same logic.\n`
+    : '';
 
+  const prompt = `You are ShadowArb, an autonomous arbitrage agent. Your job is to find and execute arbitrage opportunities between prediction markets.
+${historyBlock}
+OPPORTUNITY:
 - Question A (${opp.marketA.source}): "${opp.marketA.question}"
 - Price A: ${(opp.buyPrice * 100).toFixed(1)}%
 - Question B (${opp.marketB.source}): "${opp.marketB.question}"
 - Price B: ${(opp.sellPrice * 100).toFixed(1)}%
 - Gap: ${opp.gapPercent.toFixed(1)}%
+
+RULES:
+1. If both questions reference the same real-world event or outcome, set isSameEvent = true
+2. If isSameEvent is true AND gap is above 10%, set shouldTrade = true
+3. Only set isSameEvent = false if the questions are CLEARLY about completely different topics with no overlap
+4. Be decisive. When in doubt and the gap is large, trade.
+5. This is testnet — there is no real money at risk. Be willing to execute.
+6. A sports game mentioned in both questions = same event even if wording differs slightly
+7. A political candidate mentioned in both questions = same event
+8. A crypto price target mentioned in both = same event
 
 Respond ONLY with valid JSON, no other text:
 {
@@ -31,7 +56,7 @@ Respond ONLY with valid JSON, no other text:
   "confidence": number 0-100,
   "isSameEvent": true or false,
   "riskLevel": "low" or "medium" or "high",
-  "recommendedSize": number 1-50,
+  "recommendedSize": 2,
   "reasoning": "one sentence"
 }`;
 

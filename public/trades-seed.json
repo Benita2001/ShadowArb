@@ -1,0 +1,53 @@
+[
+  {
+    "id": "4351f380-3509-484b-b2b5-684afc951c66",
+    "timestamp": "2026-05-24T16:38:39.680Z",
+    "question": "will west ham be relegated from the english premier league?",
+    "buyOn": "kalshi",
+    "buyPrice": 7.5,
+    "sellOn": "polymarket",
+    "sellPrice": 34.5,
+    "gapPercent": 27,
+    "status": "REVEALED",
+    "commitHash": "0x36590424eb4bbb426a1e1bae50a8c6efb2f3fb476b36d62dd9ba539f8d7277b1",
+    "revealHash": "0x36590424eb4bbb426a1e1bae50a8c6efb2f3fb476b36d62dd9ba539f8d7277b1",
+    "txHash": "0x36590424eb4bbb426a1e1bae50a8c6efb2f3fb476b36d62dd9ba539f8d7277b1",
+    "jobId": "45409",
+    "claudeReasoning": "Same sporting event confirmed across both platforms with significant price gap warranting arbitrage execution.",
+    "arcExplorerUrl": "https://testnet.arcscan.app/tx/0x36590424eb4bbb426a1e1bae50a8c6efb2f3fb476b36d62dd9ba539f8d7277b1"
+  },
+  {
+    "id": "db381e15-009c-42a7-9fce-d8deba9b71f2",
+    "timestamp": "2026-05-24T16:37:59.874Z",
+    "question": "will joey bosa play for las vegas raiders in 2026-27?",
+    "buyOn": "polymarket",
+    "buyPrice": 43.9,
+    "sellOn": "kalshi",
+    "sellPrice": 78.2,
+    "gapPercent": 34.3,
+    "status": "REVEALED",
+    "commitHash": "0x88cae1e1a42b33913bb58ec6072a29c5126573e327cc05e36a4c09898c4fa2db",
+    "revealHash": "0x88cae1e1a42b33913bb58ec6072a29c5126573e327cc05e36a4c09898c4fa2db",
+    "txHash": "0x88cae1e1a42b33913bb58ec6072a29c5126573e327cc05e36a4c09898c4fa2db",
+    "jobId": "45408",
+    "claudeReasoning": "Same sporting event confirmed across both platforms with significant price gap warranting arbitrage execution.",
+    "arcExplorerUrl": "https://testnet.arcscan.app/tx/0x88cae1e1a42b33913bb58ec6072a29c5126573e327cc05e36a4c09898c4fa2db"
+  },
+  {
+    "id": "c1f3009a-7917-4706-8968-69caab535ad4",
+    "timestamp": "2026-05-24T16:37:14.515Z",
+    "question": "houston astros vs. texas rangers",
+    "buyOn": "kalshi",
+    "buyPrice": 18.4,
+    "sellOn": "polymarket",
+    "sellPrice": 45,
+    "gapPercent": 26.6,
+    "status": "REVEALED",
+    "commitHash": "0x7608c7af24a610e76af8a6656d15cdbd4bc444a34216d96a4f7dc35b9b369998",
+    "revealHash": "0x7608c7af24a610e76af8a6656d15cdbd4bc444a34216d96a4f7dc35b9b369998",
+    "txHash": "0x7608c7af24a610e76af8a6656d15cdbd4bc444a34216d96a4f7dc35b9b369998",
+    "jobId": "45406",
+    "claudeReasoning": "Same sporting event confirmed across both platforms with significant price gap warranting arbitrage execution.",
+    "arcExplorerUrl": "https://testnet.arcscan.app/tx/0x7608c7af24a610e76af8a6656d15cdbd4bc444a34216d96a4f7dc35b9b369998"
+  }
+]

@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ShadowArb Agent · Live Terminal</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@300,400,500,600,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body class="term">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="brand-mark" viewBox="0 0 32 40">
+      <path d="M24 6c-3-2-7-3-11-1-4 2-5 5-3 8 2 3 7 4 10 6 4 2 5 5 3 9-3 4-9 5-13 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M22 4c-1 2-3 3-5 3M10 36c1-2 3-3 5-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.7"/>
+      <circle cx="6" cy="34" r="1.1" fill="currentColor" opacity="0.85"/>
+    </symbol>
+    <symbol id="ico-ext" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<!-- HEADER -->
+<header class="term-header">
+  <div class="term-header-inner">
+    <a class="brand" href="Landing.html">
+      <svg class="brand-mark" style="color:var(--accent)" aria-hidden="true"><use href="#brand-mark"/></svg>
+      <span class="brand-stack">
+        <span class="name">SHADOWARB</span>
+        <span class="sub">AGENT · LIVE</span>
+      </span>
+    </a>
+
+    <div class="term-header-spacer"></div>
+
+    <div class="term-header-right">
+      <span class="chip live"><span class="pulse-dot"></span>LIVE</span>
+      <span class="chip">USDC</span>
+    </div>
+  </div>
+</header>
+
+<!-- METRICS -->
+<section class="metrics-strip">
+  <div class="metric-cell">
+    <div class="l">Markets Scanned</div>
+    <div class="v" id="m-scanned">·</div>
+    <div class="d" id="m-scanned-d">connecting…</div>
+  </div>
+  <div class="metric-cell">
+    <div class="l">Opportunities</div>
+    <div class="v" id="m-opps">·</div>
+    <div class="d" id="m-opps-d">·</div>
+  </div>
+  <div class="metric-cell">
+    <div class="l">Trades Executed</div>
+    <div class="v" id="m-executed">·</div>
+    <div class="d" id="m-executed-d">·</div>
+  </div>
+  <div class="metric-cell">
+    <div class="l">USDC Settled</div>
+    <div class="v" id="m-usdc"><span class="accent">$</span>0.00</div>
+    <div class="d" id="m-usdc-d">·</div>
+  </div>
+  <div class="agent-cell">
+    <div class="l">Agent · ERC-8004</div>
+    <div class="v" id="m-agent">
+      <span class="mono" style="color:var(--muted)">connecting…</span>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE TRADE PANEL — full-width, active light-green -->
+<section class="live-trade" id="live-panel">
+  <div class="lt-head">
+    <div class="lt-head-left">
+      <span class="pulse-dot"></span>
+      <span class="lt-label" id="lp-label">SCANNING</span>
+      <span class="lt-time" id="lp-time">waiting for signal…</span>
+    </div>
+    <div class="lt-head-right" id="lp-badges"></div>
+  </div>
+
+  <div id="lp-body">
+    <!-- scanning placeholder -->
+    <div id="lp-scanning" style="padding:40px 32px;display:flex;align-items:center;gap:16px">
+      <span class="pulse-dot" style="width:6px;height:6px;opacity:0.5"></span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.28em;color:var(--muted)">SCANNING MARKETS · WAITING FOR NEXT OPPORTUNITY</span>
+    </div>
+
+    <!-- active trade body (hidden until data arrives) -->
+    <div id="lp-trade" class="lt-body" style="display:none">
+      <div class="lt-market-col">
+        <div class="lt-eyebrow">Market</div>
+        <h2 class="lt-market" id="lp-market"></h2>
+        <div class="lt-claude">
+          <span class="lt-claude-tag" id="lp-claude-tag">CLAUDE REASONING</span>
+          <p id="lp-reasoning" style="font-family:'Switzer',sans-serif;font-size:13px;line-height:1.55;color:var(--text-2);font-style:italic"></p>
+        </div>
+      </div>
+
+      <div class="lt-legs-col">
+        <div class="lt-legs">
+          <div class="lt-leg buy">
+            <div class="lbl">BUY</div>
+            <div class="plat" id="lp-buy-plat"></div>
+            <div class="px" id="lp-buy-px"><span>%</span></div>
+          </div>
+          <div class="lt-leg sell">
+            <div class="lbl">SELL</div>
+            <div class="plat" id="lp-sell-plat"></div>
+            <div class="px" id="lp-sell-px"><span>%</span></div>
+          </div>
+        </div>
+        <div class="lt-gap">
+          <span class="lbl">Arbitrage Gap</span>
+          <span class="v" id="lp-gap"></span>
+        </div>
+      </div>
+
+      <div class="lt-meta-col">
+        <div class="lt-kv">
+          <span class="lbl">Commit</span>
+          <span class="val" id="lp-commit">·</span>
+          <button class="icon-btn" id="lp-commit-btn" type="button">COPY</button>
+        </div>
+        <div class="lt-kv">
+          <span class="lbl">Reveal</span>
+          <span class="val" id="lp-reveal">pending</span>
+          <button class="icon-btn" id="lp-reveal-btn" type="button">COPY</button>
+        </div>
+        <div class="lt-kv">
+          <span class="lbl">Tx</span>
+          <span class="val" id="lp-tx">pending</span>
+          <button class="icon-btn" id="lp-tx-btn" type="button">VIEW</button>
+        </div>
+        <div class="lt-kv">
+          <span class="lbl">Block</span>
+          <span class="val" id="lp-block">·</span>
+          <button class="icon-btn" type="button">ARC</button>
+        </div>
+        <div class="lt-kv">
+          <span class="lbl">Job</span>
+          <span class="val" id="lp-job">·</span>
+          <button class="icon-btn" id="lp-job-btn" type="button">VIEW</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEED TABLE -->
+<section class="table-wrap full">
+
+  <div class="table-toolbar">
+    <div class="left">
+      <span class="pill filter-tab active" data-filter="ALL">ALL <span class="pill-count">0</span></span>
+      <span class="pill filter-tab" data-filter="COMMITTED">COMMITTED <span class="pill-count">0</span></span>
+      <span class="pill filter-tab" data-filter="EXECUTED">EXECUTED <span class="pill-count">0</span></span>
+      <span class="pill filter-tab" data-filter="REVEALED">REVEALED <span class="pill-count">0</span></span>
+      <span class="pill filter-tab" data-filter="REJECTED">REJECTED <span class="pill-count">0</span></span>
+    </div>
+    <div class="right">
+      <span class="chip"><span class="pulse-dot" style="width:6px;height:6px"></span>TAIL -F</span>
+      <span class="chip">EXPORT</span>
+    </div>
+  </div>
+
+  <div style="overflow:auto;flex:1">
+  <table class="feed-table">
+    <thead>
+      <tr>
+        <th style="width:92px">Time</th>
+        <th style="width:122px">Status</th>
+        <th>Market</th>
+        <th style="width:130px">Buy</th>
+        <th style="width:130px">Sell</th>
+        <th class="r" style="width:80px">Gap</th>
+        <th style="width:160px">Commit</th>
+        <th style="width:160px">Tx Hash</th>
+        <th class="r" style="width:90px">Job</th>
+      </tr>
+    </thead>
+    <tbody id="feed-tbody">
+      <tr id="feed-empty">
+        <td colspan="9" style="padding:32px 22px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.22em;color:var(--muted);text-align:center">
+          <span class="pulse-dot" style="width:6px;height:6px;margin-right:10px;vertical-align:middle"></span>
+          CONNECTING TO AGENT · WAITING FOR FIRST SCAN
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="term-bottombar">
+    <div class="left">
+      <span><span class="pulse-dot" style="width:6px;height:6px;margin-right:8px;vertical-align:middle"></span>SCANNING · NEXT TICK 18s</span>
+      <span class="sep">·</span>
+      <span>FEED LATENCY 412ms</span>
+    </div>
+    <div class="right">
+      <span>AGENT&nbsp;&nbsp;<span class="mono" style="color:var(--text)" id="bb-agent">0x253b793cd09f756e7fa33f07b50cf664a532d72e</span></span>
+      <a href="#">View all on Arc Explorer →</a>
+    </div>
+  </div>
+</section>
+
+
+<script>
+const API = 'http://localhost:3001';
+
+// ── helpers ──────────────────────────────────────────────────────────────────
+const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+const trunc = h => (!h || h.length < 12) ? (h ?? '·') : h.slice(0, 6) + '…' + h.slice(-4);
+const fmt = ts => new Date(ts).toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+const statusCls = s => ({SCANNING:'scanning',EVALUATING:'evaluating',COMMITTED:'committed',
+                          EXECUTED:'executed',REVEALED:'revealed',REJECTED:'rejected'})[s] ?? 'scanning';
+
+// ── metrics ──────────────────────────────────────────────────────────────────
+function updateMetrics(s) {
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.innerHTML = v; };
+  if (s.marketsScanned > 0) set('m-scanned', s.marketsScanned);
+  set('m-scanned-d', '+' + Math.floor(s.marketsScanned / 24) + ' last 5m');
+  set('m-opps', s.opportunitiesFound ?? 0);
+  set('m-opps-d', (s.opportunitiesFound ?? 0) + ' found this session');
+  set('m-executed', s.tradesExecuted ?? 0);
+  set('m-executed-d', (s.tradesExecuted ?? 0) + ' verified · 0 failed');
+  const usdc = parseFloat((s.usdcSettled ?? '$0').replace('$', ''));
+  set('m-usdc', `<span class="accent">$</span>${usdc.toFixed(2)}`);
+  set('m-usdc-d', usdc > 0 ? 'avg margin 18.6%' : '·');
+  if (s.agentAddress && s.agentAddress !== '0x0000000000000000000000000000000000000000') {
+    const short = s.agentAddress.slice(0, 6) + '…' + s.agentAddress.slice(-4);
+    set('m-agent', `<span class="mono">${short}</span>
+      <a href="https://testnet.arcscan.app/address/${s.agentAddress}" target="_blank">
+        ARC <svg width="10" height="10" style="margin-left:2px;vertical-align:-1px"><use href="#ico-ext"/></svg>
+      </a>`);
+    // also update bottom bar agent address
+    const bb = document.getElementById('bb-agent');
+    if (bb) bb.textContent = s.agentAddress;
+  }
+}
+
+// ── live panel ───────────────────────────────────────────────────────────────
+function showScanningState() {
+  document.getElementById('lp-label').textContent = 'SCANNING';
+  document.getElementById('lp-time').textContent = 'waiting for signal…';
+  document.getElementById('lp-badges').innerHTML = '';
+  document.getElementById('lp-scanning').style.display = 'flex';
+  document.getElementById('lp-trade').style.display = 'none';
+}
+
+function showActivePanel(t) {
+  const isEval   = t.status === 'EVALUATING';
+  const isCommit = t.status === 'COMMITTED';
+  const isDone   = t.status === 'REVEALED' || t.status === 'EXECUTED';
+
+  document.getElementById('lp-label').textContent =
+    isEval ? 'CLAUDE EVALUATING · LIVE' :
+    isCommit ? 'TRADE COMMITTED · ON-CHAIN' :
+    'TRADE ACTIVE · LIVE';
+
+  document.getElementById('lp-time').textContent =
+    fmt(t.timestamp) + ' · just now';
+
+  // badges
+  const badgesEl = document.getElementById('lp-badges');
+  if (isEval) {
+    badgesEl.innerHTML = `<span class="status-pill evaluating">EVALUATING</span>
+      <span class="match-inline" style="color:var(--muted);border-color:rgba(255,255,255,0.12)">
+        <span class="pulse-dot" style="width:6px;height:6px"></span> CLAUDE THINKING
+      </span>`;
+  } else if (isCommit) {
+    badgesEl.innerHTML = `<span class="status-pill committed">COMMITTED</span>
+      <span class="match-inline" style="color:var(--accent)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 2l2 7h7l-6 4 2 7-5-4-5 4 2-7-6-4h7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        SEALED ON ARC
+      </span>`;
+  } else {
+    badgesEl.innerHTML = `<span class="status-pill revealed">REVEALED</span>
+      <span class="match-inline">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        HASHES MATCH
+      </span>`;
+  }
+
+  document.getElementById('lp-scanning').style.display = 'none';
+  document.getElementById('lp-trade').style.display = '';
+
+  // market col
+  document.getElementById('lp-market').textContent = t.question;
+  const tagEl = document.getElementById('lp-claude-tag');
+  const reasonEl = document.getElementById('lp-reasoning');
+  if (isEval) {
+    tagEl.textContent = 'CLAUDE EVALUATING';
+    reasonEl.textContent = 'Verifying both markets resolve on the same event. Checking for false positives…';
+    reasonEl.style.color = 'var(--muted)';
+  } else if (t.claudeReasoning) {
+    tagEl.textContent = 'CLAUDE REASONING';
+    reasonEl.textContent = '"' + t.claudeReasoning + '"';
+    reasonEl.style.color = 'var(--text-2)';
+  }
+
+  // legs col
+  document.getElementById('lp-buy-plat').textContent  = cap(t.buyOn);
+  document.getElementById('lp-buy-px').innerHTML      = `${t.buyPrice.toFixed(1)}<span>%</span>`;
+  document.getElementById('lp-sell-plat').textContent = cap(t.sellOn);
+  document.getElementById('lp-sell-px').innerHTML     = `${t.sellPrice.toFixed(1)}<span>%</span>`;
+  document.getElementById('lp-gap').textContent       = t.gapPercent.toFixed(1) + '%';
+
+  // meta col
+  const commit = t.commitHash ?? '·';
+  document.getElementById('lp-commit').textContent = t.commitHash ? trunc(t.commitHash) : (isEval ? 'sealing…' : '·');
+  document.getElementById('lp-commit-btn').onclick  = () => navigator.clipboard.writeText(commit);
+  document.getElementById('lp-reveal').textContent  = t.revealHash ? trunc(t.revealHash) : 'pending';
+  document.getElementById('lp-reveal-btn').onclick  = () => navigator.clipboard.writeText(t.revealHash ?? '');
+  document.getElementById('lp-tx').textContent      = t.txHash ? trunc(t.txHash) : 'pending';
+  document.getElementById('lp-tx-btn').onclick      = () => t.arcExplorerUrl && window.open(t.arcExplorerUrl, '_blank');
+  document.getElementById('lp-block').textContent   = t.jobId ? `${t.jobId} · Arc` : '·';
+  document.getElementById('lp-job').textContent     = t.jobId ? `${t.jobId} · ERC-8183` : '·';
+  document.getElementById('lp-job-btn').onclick     = () => t.arcExplorerUrl && window.open(t.arcExplorerUrl, '_blank');
+}
+
+// ── feed table ───────────────────────────────────────────────────────────────
+function buildRow(t) {
+  const highlight = t.status === 'REVEALED';
+  const buy  = t.buyOn  ? `<div class="platrow"><span class="plat">${cap(t.buyOn)}</span><span class="px buy">${t.buyPrice.toFixed(1)}%</span></div>`   : '<span class="hash muted">·</span>';
+  const sell = t.sellOn ? `<div class="platrow"><span class="plat">${cap(t.sellOn)}</span><span class="px sell">${t.sellPrice.toFixed(1)}%</span></div>` : '<span class="hash muted">·</span>';
+  const gap  = t.gapPercent > 0 ? `<span class="gap${t.status==='REJECTED'?' dim':''}">+${t.gapPercent.toFixed(1)}%</span>` : '<span class="gap dim">·</span>';
+
+  const commitNote = t.commitHash
+    ? `<span class="hash">${trunc(t.commitHash)} <a class="ext" href="${t.arcExplorerUrl??'#'}" target="_blank"><svg width="11" height="11"><use href="#ico-ext"/></svg></a></span>`
+    : `<span class="hash muted">${t.status==='SCANNING'?'30s tick':t.status==='REJECTED'?(t.claudeReasoning??'rejected'):'·'}</span>`;
+  const txNote = t.txHash
+    ? `<span class="hash">${trunc(t.txHash)} <a class="ext" href="${t.arcExplorerUrl??'#'}" target="_blank"><svg width="11" height="11"><use href="#ico-ext"/></svg></a></span>`
+    : `<span class="hash muted">${t.status==='COMMITTED'?'pending':'·'}</span>`;
+  const jobNote = t.jobId ? `<span class="hash">${t.jobId}</span>` : '<span class="hash muted">·</span>';
+
+  return `<tr class="trade-row${highlight?' row-active':''}" data-id="${t.id}" data-status="${t.status}">
+    <td class="ts">${fmt(t.timestamp)}</td>
+    <td><span class="status-pill ${statusCls(t.status)}">${t.status}</span></td>
+    <td class="market">${t.question}</td>
+    <td>${buy}</td><td>${sell}</td>
+    <td class="r">${gap}</td>
+    <td>${commitNote}</td><td>${txNote}</td>
+    <td class="r">${jobNote}</td>
+  </tr>`;
+}
+
+function updateTable(trades) {
+  const tbody = document.getElementById('feed-tbody');
+  if (!tbody) return;
+  if (trades.length === 0) {
+    tbody.innerHTML = `<tr id="feed-empty"><td colspan="9" style="padding:32px 22px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.22em;color:var(--muted);text-align:center">
+      <span class="pulse-dot" style="width:6px;height:6px;margin-right:10px;vertical-align:middle"></span>
+      CONNECTING TO AGENT · WAITING FOR FIRST SCAN</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = trades.map(buildRow).join('');
+
+  const counts = { ALL: trades.length, COMMITTED: 0, EXECUTED: 0, REVEALED: 0, REJECTED: 0 };
+  trades.forEach(t => { if (counts[t.status] !== undefined) counts[t.status]++; });
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    const c = tab.querySelector('.pill-count');
+    if (c) c.textContent = counts[tab.dataset.filter] ?? 0;
+  });
+}
+
+// ── main refresh ─────────────────────────────────────────────────────────────
+async function refresh() {
+  try {
+    const [sRes, tRes] = await Promise.all([
+      fetch(`${API}/api/stats`),
+      fetch(`${API}/api/trades`),
+    ]);
+    if (sRes.ok) updateMetrics(await sRes.json());
+
+    if (!tRes.ok) return;
+    const trades = await tRes.json();
+
+    // Live panel: show whatever Claude is currently working on
+    // Priority: EVALUATING → COMMITTED (just sealed) → latest REVEALED/EXECUTED
+    const forPanel =
+      trades.find(t => t.status === 'EVALUATING') ||
+      trades.find(t => t.status === 'COMMITTED')  ||
+      trades.find(t => t.status === 'REVEALED' || t.status === 'EXECUTED');
+
+    if (forPanel) {
+      showActivePanel(forPanel);
+    } else {
+      showScanningState();
+    }
+
+    // Table: Claude-evaluated trades only — SCANNING rows stay out, live EVALUATING goes to panel
+    const evaluatingId = trades.find(t => t.status === 'EVALUATING')?.id;
+    const tableData = trades.filter(t => t.status !== 'SCANNING' && t.id !== evaluatingId);
+    updateTable(tableData);
+
+  } catch { /* API offline — keep current state */ }
+}
+
+refresh();
+setInterval(refresh, 5000); // 5s polling for near-realtime feel
+
+// ── filter tabs ──────────────────────────────────────────────────────────────
+document.querySelectorAll('.filter-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const filter = tab.dataset.filter;
+    document.querySelectorAll('.trade-row').forEach(row => {
+      if (filter === 'ALL' || row.dataset.status === filter) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>
